@@ -5,7 +5,7 @@ namespace ExtendsFramework\ORM\EntityManager;
 
 use ExtendsFramework\ORM\Collection\CollectionInterface;
 use ExtendsFramework\ORM\Entity\EntityInterface;
-use ExtendsFramework\ORM\EntityManager\Exception\EntityNotFound;
+use ExtendsFramework\ORM\EntityManager\Exception\EntityNotSupported;
 use ExtendsFramework\ORM\Query\QueryInterface;
 
 interface EntityManagerInterface
@@ -17,10 +17,10 @@ interface EntityManagerInterface
      *
      * @param string $identifier
      * @param string $entity
-     * @return EntityInterface
-     * @throws EntityNotFound When entity can not be found for identifier.
+     * @return EntityInterface|null
+     * @throws EntityNotSupported When entity is not supported by entity manager.
      */
-    public function findById(string $identifier, string $entity): EntityInterface;
+    public function findById(string $identifier, string $entity): ?EntityInterface;
 
     /**
      * Find by query.
@@ -30,6 +30,7 @@ interface EntityManagerInterface
      * @param QueryInterface $query
      * @param string         $entity
      * @return CollectionInterface
+     * @throws EntityNotSupported When entity is not supported by entity manager.
      */
     public function findByQuery(QueryInterface $query, string $entity): CollectionInterface;
 }

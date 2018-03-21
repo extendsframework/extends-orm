@@ -5,8 +5,9 @@ namespace ExtendsFramework\ORM\Entity\Relation\OneToOne;
 
 use ExtendsFramework\ORM\Entity\EntityInterface;
 use ExtendsFramework\ORM\Entity\Relation\AbstractRelation;
+use ExtendsFramework\ORM\Entity\Relation\OneToOne\Exception\NullRelationNotAllowed;
 use ExtendsFramework\ORM\EntityManager\EntityManagerInterface;
-use ExtendsFramework\ORM\EntityManager\Exception\EntityNotFound;
+use ExtendsFramework\ORM\EntityManager\Exception\EntityNotSupported;
 
 class OneToOneRelation extends AbstractRelation
 {
@@ -70,22 +71,21 @@ class OneToOneRelation extends AbstractRelation
 
     /**
      * @inheritDoc
-     * @throws EntityNotFound
+     * @throws NullRelationNotAllowed When related entity is null and null relation is not allowed.
+     * @throws EntityNotSupported     When related entity is not registered by entity manager.
      */
     public function getRelated(EntityManagerInterface $entityManager, EntityInterface $entity): ?EntityInterface
     {
         if ($this->initialized === false) {
             $property = $entity->getProperty($this->local);
 
-            try {
-                $this->related = $entityManager->findById($property->getValue(), $this->entity);
-            } catch (EntityNotFound $exception) {
-                if ($this->allowEmpty === false) {
-                    throw $exception;
-                }
+            $related = $entityManager->findById($property->getValue(), $this->entity);
+            if ($related === null && $this->allowEmpty === false) {
+                throw new NullRelationNotAllowed($this->getName());
             }
 
             $this->initialized = true;
+            $this->related = $related;
         }
 
         return $this->related;

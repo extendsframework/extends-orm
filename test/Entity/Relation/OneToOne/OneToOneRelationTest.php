@@ -6,7 +6,6 @@ namespace ExtendsFramework\ORM\Entity\Relation\OneToOne;
 use ExtendsFramework\ORM\Entity\EntityInterface;
 use ExtendsFramework\ORM\Entity\Property\PropertyInterface;
 use ExtendsFramework\ORM\EntityManager\EntityManagerInterface;
-use ExtendsFramework\ORM\EntityManager\Exception\EntityNotFound;
 use PHPUnit\Framework\TestCase;
 
 class OneToOneRelationTest extends TestCase
@@ -69,7 +68,7 @@ class OneToOneRelationTest extends TestCase
             ->expects($this->once())
             ->method('findById')
             ->with('3', 'AuthorEntity')
-            ->willThrowException(new EntityNotFound());
+            ->willReturn(null);
 
         $property = $this->createMock(PropertyInterface::class);
         $property
@@ -100,8 +99,9 @@ class OneToOneRelationTest extends TestCase
      *
      * @covers                   \ExtendsFramework\ORM\Entity\Relation\OneToOne\OneToOneRelation::__construct()
      * @covers                   \ExtendsFramework\ORM\Entity\Relation\OneToOne\OneToOneRelation::getRelated()
-     * @expectedException        \ExtendsFramework\ORM\EntityManager\Exception\EntityNotFound
-     * @expectedExceptionMessage Entity not found.
+     * @covers                   \ExtendsFramework\ORM\Entity\Relation\OneToOne\Exception\NullRelationNotAllowed::__construct()
+     * @expectedException        \ExtendsFramework\ORM\Entity\Relation\OneToOne\Exception\NullRelationNotAllowed
+     * @expectedExceptionMessage Null value for relation "author" is not allowed.
      */
     public function testEntityNotFound(): void
     {
@@ -110,7 +110,7 @@ class OneToOneRelationTest extends TestCase
             ->expects($this->once())
             ->method('findById')
             ->with('3', 'AuthorEntity')
-            ->willThrowException(new EntityNotFound());
+            ->willReturn(null);
 
         $property = $this->createMock(PropertyInterface::class);
         $property

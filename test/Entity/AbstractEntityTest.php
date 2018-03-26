@@ -62,22 +62,16 @@ class AbstractEntityTest extends TestCase
      * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::getProperty()
      * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::getProperty()
      * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::getRelation()
+     * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::getIdentifier()
      * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::__get()
      */
     public function testGetMethods(): void
     {
-        $collection = $this->createMock(CollectionInterface::class);
-
         $relation = $this->createMock(RelationInterface::class);
         $relation
             ->expects($this->once())
             ->method('getName')
             ->willReturn('comments');
-
-        $relation
-            ->expects($this->once())
-            ->method('getRelated')
-            ->willReturn($collection);
 
         $property = $this->createMock(PropertyInterface::class);
         $property
@@ -102,9 +96,7 @@ class AbstractEntityTest extends TestCase
 
         $this->assertSame($property, $entity->getProperty('name'));
         $this->assertSame($relation, $entity->getRelation('comments'));
-
-        $this->assertSame('John Doe', $entity->name);
-        $this->assertSame($collection, $entity->comments);
+        $this->assertSame('John Doe', $entity->getIdentifier());
     }
 
     /**
@@ -182,6 +174,37 @@ class AbstractEntityTest extends TestCase
          */
         $entity = new EntityStub($property, $relation);
         $entity->name = 'John Doe';
+    }
+
+    /**
+     * Identifier not set.
+     *
+     * Test that and exception will be thrown when identifier is not set after set up.
+     *
+     * @covers                   \ExtendsFramework\ORM\Entity\AbstractEntity::initialize()
+     * @covers                   \ExtendsFramework\ORM\Entity\Exception\IdentifierNotSet::__construct()
+     * @expectedException        \ExtendsFramework\ORM\Entity\Exception\IdentifierNotSet
+     * @expectedExceptionMessage No identifier set for entity.
+     */
+    public function testIdentifierNotSet(): void
+    {
+        $entity = new class extends AbstractEntity
+        {
+            /**
+             * @inheritDoc
+             */
+            protected function setUp(): void
+            {
+            }
+        };
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+
+        /**
+         * @var EntityManagerInterface $entityManager
+         * @var PropertyInterface      $property
+         */
+        $entity->initialize($entityManager, new stdClass());
     }
 
     /**
@@ -304,12 +327,10 @@ class EntityStub extends AbstractEntity
     /**
      * @inheritDoc
      */
-    protected function setUp(): AbstractEntity
+    protected function setUp(): void
     {
         $this
-            ->addProperty($this->property)
+            ->addProperty($this->property, true)
             ->addRelation($this->relation);
-
-        return $this;
     }
 }

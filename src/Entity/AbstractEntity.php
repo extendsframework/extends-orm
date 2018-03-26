@@ -5,6 +5,7 @@ namespace ExtendsFramework\ORM\Entity;
 
 use ExtendsFramework\ORM\Entity\Exception\EntityAlreadyInitialized;
 use ExtendsFramework\ORM\Entity\Exception\EntityIsImmutable;
+use ExtendsFramework\ORM\Entity\Exception\IdentifierNotSet;
 use ExtendsFramework\ORM\Entity\Exception\PropertyNotFound;
 use ExtendsFramework\ORM\Entity\Exception\RelationNotFound;
 use ExtendsFramework\ORM\Entity\Property\PropertyException;
@@ -50,6 +51,13 @@ abstract class AbstractEntity implements EntityInterface
     private $initialized = false;
 
     /**
+     * Entity identity property.
+     *
+     * @var PropertyInterface|null
+     */
+    private $identifier;
+
+    /**
      * @inheritDoc
      * @throws PropertyNotFound When property for relation can not be found.
      */
@@ -86,6 +94,14 @@ abstract class AbstractEntity implements EntityInterface
     /**
      * @inheritDoc
      */
+    public function getIdentifier(): string
+    {
+        return $this->identifier->getValue();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function initialize(EntityManagerInterface $entityManager, object $data): EntityInterface
     {
         if ($this->initialized === true) {
@@ -96,9 +112,12 @@ abstract class AbstractEntity implements EntityInterface
         $this->data = $data;
         $this->initialized = true;
 
-        return $this
-            ->setUp()
-            ->populate($data);
+        $this->setUp();
+        if ($this->identifier === null) {
+            throw new IdentifierNotSet();
+        }
+
+        return $this->populate($data);
     }
 
     /**
@@ -128,11 +147,16 @@ abstract class AbstractEntity implements EntityInterface
     /**
      * Add property.
      *
-     * @param PropertyInterface $property
+     * @param PropertyInterface $property   Property to add.
+     * @param bool|null         $identifier If this property identifies the entity.
      * @return AbstractEntity
      */
-    protected function addProperty(PropertyInterface $property): AbstractEntity
+    protected function addProperty(PropertyInterface $property, bool $identifier = null): AbstractEntity
     {
+        if ($identifier === true) {
+            $this->identifier = $property;
+        }
+
         $this->properties[$property->getName()] = $property;
 
         return $this;
@@ -156,9 +180,9 @@ abstract class AbstractEntity implements EntityInterface
      *
      * Set up properties and relations for entity.
      *
-     * @return AbstractEntity
+     * @return void
      */
-    abstract protected function setUp(): AbstractEntity;
+    abstract protected function setUp(): void;
 
     /**
      * Populate entity.

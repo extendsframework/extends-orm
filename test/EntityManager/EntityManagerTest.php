@@ -38,6 +38,7 @@ class EntityManagerTest extends TestCase
         $manager->addRepository($repository, 'BlogEntity');
 
         $this->assertSame($entity, $manager->findById('3', 'BlogEntity'));
+        $this->assertSame($entity, $manager->findById('3', 'BlogEntity')); // Must read from internal entity map.
     }
 
     /**

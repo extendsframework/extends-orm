@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace ExtendsFramework\ORM\Collection;
 
 use ExtendsFramework\ORM\Entity\EntityInterface;
+use Iterator;
 
-interface CollectionInterface
+interface CollectionInterface extends Iterator
 {
     /**
      * Get first entity.
@@ -22,4 +23,11 @@ interface CollectionInterface
      * @return bool
      */
     public function isEmpty(): bool;
+
+    /**
+     * Get current entity.
+     *
+     * @return EntityInterface
+     */
+    public function current(): EntityInterface;
 }

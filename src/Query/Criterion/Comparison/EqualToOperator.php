@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ExtendsFramework\ORM\Query\Criterion\Comparison;
 
 use ExtendsFramework\ORM\Query\Criterion\CriterionInterface;
-use InvalidArgumentException;
 
 class EqualToOperator implements CriterionInterface
 {
@@ -27,7 +26,6 @@ class EqualToOperator implements CriterionInterface
      *
      * @param string $property
      * @param mixed  $value
-     * @throws InvalidArgumentException
      */
     public function __construct(string $property, $value)
     {

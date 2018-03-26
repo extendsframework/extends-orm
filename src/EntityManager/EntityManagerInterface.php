@@ -16,11 +16,11 @@ interface EntityManagerInterface
      * Find entity for identifier.
      *
      * @param string $identifier
-     * @param string $entity
+     * @param string $class
      * @return EntityInterface|null
      * @throws EntityNotSupported When entity is not supported by entity manager.
      */
-    public function findById(string $identifier, string $entity): ?EntityInterface;
+    public function findById(string $identifier, string $class): ?EntityInterface;
 
     /**
      * Find by query.
@@ -28,9 +28,9 @@ interface EntityManagerInterface
      * Get a collection for query.
      *
      * @param QueryInterface $query
-     * @param string         $entity
+     * @param string         $class
      * @return CollectionInterface
      * @throws EntityNotSupported When entity is not supported by entity manager.
      */
-    public function findByQuery(QueryInterface $query, string $entity): CollectionInterface;
+    public function findByQuery(QueryInterface $query, string $class): CollectionInterface;
 }

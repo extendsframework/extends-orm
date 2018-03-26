@@ -20,22 +20,41 @@ class EntityManager implements EntityManagerInterface
     private $repositories = [];
 
     /**
+     * Entity map.
+     *
+     * Holds the repository entities by identifier.
+     *
+     * @var EntityInterface[][]
+     */
+    private $entityMap = [];
+
+    /**
      * @inheritDoc
      */
-    public function findById(string $identifier, string $entityClass): ?EntityInterface
+    public function findById(string $identifier, string $class): ?EntityInterface
     {
-        return $this
-            ->getRepository($entityClass)
+        if ($this->entityMap[$class][$identifier] ?? false) {
+            return $this->entityMap[$class][$identifier];
+        }
+
+        $entity = $this
+            ->getRepository($class)
             ->findById($identifier);
+
+        if ($entity instanceof EntityInterface) {
+            $this->entityMap[$class][$identifier] = $entity;
+        }
+
+        return $entity;
     }
 
     /**
      * @inheritDoc
      */
-    public function findByQuery(QueryInterface $query, string $entity): CollectionInterface
+    public function findByQuery(QueryInterface $query, string $class): CollectionInterface
     {
         return $this
-            ->getRepository($entity)
+            ->getRepository($class)
             ->findByQuery($query);
     }
 

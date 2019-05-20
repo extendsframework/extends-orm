@@ -33,7 +33,7 @@ class EntityManager implements EntityManagerInterface
      */
     public function findById(string $identifier, string $class): ?EntityInterface
     {
-        if ($this->entityMap[$class][$identifier] ?? false) {
+        if (isset($this->entityMap[$class][$identifier]) === true) {
             return $this->entityMap[$class][$identifier];
         }
 

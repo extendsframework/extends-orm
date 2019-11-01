@@ -194,9 +194,7 @@ abstract class AbstractEntity implements EntityInterface
     private function populate(object $data): AbstractEntity
     {
         foreach ($this->properties as $property) {
-            $property->populate(
-                $data->{$property->getName()} ?? null
-            );
+            $property->populate($data->{$property->getName()} ?? null);
         }
 
         return $this;

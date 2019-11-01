@@ -15,6 +15,9 @@ class EntityIsImmutable extends RuntimeException implements EntityException
      */
     public function __construct(string $property)
     {
-        parent::__construct('Entity is immutable and can not be changed.');
+        parent::__construct(sprintf(
+            'Entity is immutable and property "%s" can not be set.',
+            $property
+        ));
     }
 }

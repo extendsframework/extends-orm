@@ -160,7 +160,7 @@ class AbstractEntityTest extends TestCase
      * @covers                   \ExtendsFramework\ORM\Entity\AbstractEntity::__set()
      * @covers                   \ExtendsFramework\ORM\Entity\Exception\EntityIsImmutable::__construct()
      * @expectedException        \ExtendsFramework\ORM\Entity\Exception\EntityIsImmutable
-     * @expectedExceptionMessage Entity is immutable and can not be changed.
+     * @expectedExceptionMessage Entity is immutable and property "name" can not be set.
      */
     public function testEntityIsImmutable(): void
     {

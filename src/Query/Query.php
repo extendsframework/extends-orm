@@ -13,12 +13,12 @@ class Query implements QueryInterface
     private $criteria;
 
     /**
-     * @var int|null
+     * @var int
      */
     private $limit;
 
     /**
-     * @var int|null
+     * @var int
      */
     private $offset;
 
@@ -35,8 +35,8 @@ class Query implements QueryInterface
         int $offset = null
     ) {
         $this->criteria = $criteria;
-        $this->limit = $limit;
-        $this->offset = $offset;
+        $this->limit = $limit ?? 20;
+        $this->offset = $offset ?? 0;
     }
 
     /**
@@ -52,7 +52,7 @@ class Query implements QueryInterface
      */
     public function getLimit(): int
     {
-        return $this->limit ?? 20;
+        return $this->limit;
     }
 
     /**
@@ -60,6 +60,6 @@ class Query implements QueryInterface
      */
     public function getOffset(): int
     {
-        return $this->offset ?? 0;
+        return $this->offset;
     }
 }

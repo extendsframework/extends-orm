@@ -68,7 +68,7 @@ class EntityManager implements EntityManagerInterface
      */
     public function addRepository(RepositoryInterface $repository, string $entity): EntityManager
     {
-        if (array_key_exists($entity, $this->repositories)) {
+        if (isset($this->repositories[$entity])) {
             throw new EntityAlreadyRegistered($entity);
         }
 

@@ -5,6 +5,8 @@ namespace ExtendsFramework\ORM\EntityManager;
 
 use ExtendsFramework\ORM\Collection\CollectionInterface;
 use ExtendsFramework\ORM\Entity\EntityInterface;
+use ExtendsFramework\ORM\EntityManager\Exception\EntityAlreadyRegistered;
+use ExtendsFramework\ORM\EntityManager\Exception\EntityNotSupported;
 use ExtendsFramework\ORM\Query\QueryInterface;
 use ExtendsFramework\ORM\Repository\RepositoryInterface;
 use PHPUnit\Framework\TestCase;
@@ -78,15 +80,16 @@ class EntityManagerTest extends TestCase
      *
      * Test that an exception will be thrown when there is no repository found for the entity.
      *
-     * @covers                   \ExtendsFramework\ORM\EntityManager\EntityManager::addRepository()
-     * @covers                   \ExtendsFramework\ORM\EntityManager\EntityManager::findByQuery()
-     * @covers                   \ExtendsFramework\ORM\EntityManager\EntityManager::getRepository()
-     * @covers                   \ExtendsFramework\ORM\EntityManager\Exception\EntityNotSupported::__construct
-     * @expectedException        \ExtendsFramework\ORM\EntityManager\Exception\EntityNotSupported
-     * @expectedExceptionMessage Entity "BlogEntity" is not supported by the entity manager.
+     * @covers \ExtendsFramework\ORM\EntityManager\EntityManager::addRepository()
+     * @covers \ExtendsFramework\ORM\EntityManager\EntityManager::findByQuery()
+     * @covers \ExtendsFramework\ORM\EntityManager\EntityManager::getRepository()
+     * @covers \ExtendsFramework\ORM\EntityManager\Exception\EntityNotSupported::__construct
      */
     public function testEntityNotSupported(): void
     {
+        $this->expectException(EntityNotSupported::class);
+        $this->expectExceptionMessage('Entity "BlogEntity" is not supported by the entity manager.');
+
         $manager = new EntityManager();
         $manager->findById('3', 'BlogEntity');
     }
@@ -96,15 +99,16 @@ class EntityManagerTest extends TestCase
      *
      * Test that an exception will be thrown when there is no repository found for the entity.
      *
-     * @covers                   \ExtendsFramework\ORM\EntityManager\EntityManager::addRepository()
-     * @covers                   \ExtendsFramework\ORM\EntityManager\EntityManager::findByQuery()
-     * @covers                   \ExtendsFramework\ORM\EntityManager\EntityManager::getRepository()
-     * @covers                   \ExtendsFramework\ORM\EntityManager\Exception\EntityAlreadyRegistered::__construct
-     * @expectedException        \ExtendsFramework\ORM\EntityManager\Exception\EntityAlreadyRegistered
-     * @expectedExceptionMessage Entity "BlogEntity" is already registered.
+     * @covers \ExtendsFramework\ORM\EntityManager\EntityManager::addRepository()
+     * @covers \ExtendsFramework\ORM\EntityManager\EntityManager::findByQuery()
+     * @covers \ExtendsFramework\ORM\EntityManager\EntityManager::getRepository()
+     * @covers \ExtendsFramework\ORM\EntityManager\Exception\EntityAlreadyRegistered::__construct
      */
     public function testEntityAlreadyRegistered(): void
     {
+        $this->expectException(EntityAlreadyRegistered::class);
+        $this->expectExceptionMessage('Entity "BlogEntity" is already registered.');
+
         $repository = $this->createMock(RepositoryInterface::class);
 
         /**

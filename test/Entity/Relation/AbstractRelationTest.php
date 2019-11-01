@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\ORM\Entity\Relation;
 
-use ExtendsFramework\ORM\Entity\EntityInterface;
-use ExtendsFramework\ORM\EntityManager\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 
 class AbstractRelationTest extends TestCase
@@ -22,15 +20,5 @@ class AbstractRelationTest extends TestCase
         $relation = new RelationStub('comments');
 
         $this->assertSame('comments', $relation->getName());
-    }
-}
-
-class RelationStub extends AbstractRelation
-{
-    /**
-     * @inheritDoc
-     */
-    public function getRelated(EntityManagerInterface $entityManager, EntityInterface $entity)
-    {
     }
 }

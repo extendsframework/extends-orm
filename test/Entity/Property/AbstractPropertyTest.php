@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\ORM\Entity\Property;
 
+use ExtendsFramework\ORM\Entity\Property\Exception\PropertyAlreadyPopulated;
+use ExtendsFramework\ORM\Entity\Property\Exception\PropertyIsNotNullable;
 use PHPUnit\Framework\TestCase;
 
 class AbstractPropertyTest extends TestCase
@@ -34,15 +36,16 @@ class AbstractPropertyTest extends TestCase
      *
      * Test that an exception will be thrown when property is already populated.
      *
-     * @covers                   \ExtendsFramework\ORM\Entity\Property\AbstractProperty::__construct()
-     * @covers                   \ExtendsFramework\ORM\Entity\Property\AbstractProperty::populate()
-     * @covers                   \ExtendsFramework\ORM\Entity\Property\AbstractProperty::setValue()
-     * @covers                   \ExtendsFramework\ORM\Entity\Property\Exception\PropertyAlreadyPopulated::__construct()
-     * @expectedException        \ExtendsFramework\ORM\Entity\Property\Exception\PropertyAlreadyPopulated
-     * @expectedExceptionMessage Property with name "name" is already populated.
+     * @covers \ExtendsFramework\ORM\Entity\Property\AbstractProperty::__construct()
+     * @covers \ExtendsFramework\ORM\Entity\Property\AbstractProperty::populate()
+     * @covers \ExtendsFramework\ORM\Entity\Property\AbstractProperty::setValue()
+     * @covers \ExtendsFramework\ORM\Entity\Property\Exception\PropertyAlreadyPopulated::__construct()
      */
     public function testPropertyAlreadyPopulated(): void
     {
+        $this->expectException(PropertyAlreadyPopulated::class);
+        $this->expectExceptionMessage('Property with name "name" is already populated.');
+
         $property = new PropertyStub('name', true);
         $property
             ->populate('John Doe')
@@ -54,26 +57,16 @@ class AbstractPropertyTest extends TestCase
      *
      * Test that an exception will be thrown when a null value is passed to a not nullable property.
      *
-     * @covers                   \ExtendsFramework\ORM\Entity\Property\AbstractProperty::__construct()
-     * @covers                   \ExtendsFramework\ORM\Entity\Property\AbstractProperty::populate()
-     * @covers                   \ExtendsFramework\ORM\Entity\Property\Exception\PropertyIsNotNullable::__construct()
-     * @expectedException        \ExtendsFramework\ORM\Entity\Property\Exception\PropertyIsNotNullable
-     * @expectedExceptionMessage Null value is not allowed for property with name "name".
+     * @covers \ExtendsFramework\ORM\Entity\Property\AbstractProperty::__construct()
+     * @covers \ExtendsFramework\ORM\Entity\Property\AbstractProperty::populate()
+     * @covers \ExtendsFramework\ORM\Entity\Property\Exception\PropertyIsNotNullable::__construct()
      */
     public function testPropertyIsNotNullable(): void
     {
+        $this->expectException(PropertyIsNotNullable::class);
+        $this->expectExceptionMessage('Null value is not allowed for property with name "name".');
+
         $property = new PropertyStub('name');
         $property->populate(null);
-    }
-}
-
-class PropertyStub extends AbstractProperty
-{
-    /**
-     * @inheritDoc
-     */
-    protected function doPopulate($value): AbstractProperty
-    {
-        return $this->setValue($value);
     }
 }

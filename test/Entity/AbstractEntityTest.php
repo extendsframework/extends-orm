@@ -4,6 +4,11 @@ declare(strict_types=1);
 namespace ExtendsFramework\ORM\Entity;
 
 use ExtendsFramework\ORM\Collection\CollectionInterface;
+use ExtendsFramework\ORM\Entity\Exception\EntityAlreadyInitialized;
+use ExtendsFramework\ORM\Entity\Exception\EntityIsImmutable;
+use ExtendsFramework\ORM\Entity\Exception\IdentifierNotSet;
+use ExtendsFramework\ORM\Entity\Exception\PropertyNotFound;
+use ExtendsFramework\ORM\Entity\Exception\RelationNotFound;
 use ExtendsFramework\ORM\Entity\Property\PropertyInterface;
 use ExtendsFramework\ORM\Entity\Relation\RelationInterface;
 use ExtendsFramework\ORM\EntityManager\EntityManagerInterface;
@@ -157,13 +162,14 @@ class AbstractEntityTest extends TestCase
      *
      * Test that entity is immutable and property can not be set.
      *
-     * @covers                   \ExtendsFramework\ORM\Entity\AbstractEntity::__set()
-     * @covers                   \ExtendsFramework\ORM\Entity\Exception\EntityIsImmutable::__construct()
-     * @expectedException        \ExtendsFramework\ORM\Entity\Exception\EntityIsImmutable
-     * @expectedExceptionMessage Entity is immutable and property "name" can not be set.
+     * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::__set()
+     * @covers \ExtendsFramework\ORM\Entity\Exception\EntityIsImmutable::__construct()
      */
     public function testEntityIsImmutable(): void
     {
+        $this->expectException(EntityIsImmutable::class);
+        $this->expectExceptionMessage('Entity is immutable and property "name" can not be set.');
+
         $relation = $this->createMock(RelationInterface::class);
 
         $property = $this->createMock(PropertyInterface::class);
@@ -181,13 +187,14 @@ class AbstractEntityTest extends TestCase
      *
      * Test that and exception will be thrown when identifier is not set after set up.
      *
-     * @covers                   \ExtendsFramework\ORM\Entity\AbstractEntity::initialize()
-     * @covers                   \ExtendsFramework\ORM\Entity\Exception\IdentifierNotSet::__construct()
-     * @expectedException        \ExtendsFramework\ORM\Entity\Exception\IdentifierNotSet
-     * @expectedExceptionMessage No identifier set for entity.
+     * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::initialize()
+     * @covers \ExtendsFramework\ORM\Entity\Exception\IdentifierNotSet::__construct()
      */
     public function testIdentifierNotSet(): void
     {
+        $this->expectException(IdentifierNotSet::class);
+        $this->expectExceptionMessage('No identifier set for entity.');
+
         $entity = new class extends AbstractEntity
         {
             /**
@@ -212,13 +219,14 @@ class AbstractEntityTest extends TestCase
      *
      * Test that an exception will be thrown when entity is already initialized.
      *
-     * @covers                   \ExtendsFramework\ORM\Entity\AbstractEntity::initialize()
-     * @covers                   \ExtendsFramework\ORM\Entity\Exception\EntityAlreadyInitialized::__construct()
-     * @expectedException        \ExtendsFramework\ORM\Entity\Exception\EntityAlreadyInitialized
-     * @expectedExceptionMessage Entity can only be initialized once.
+     * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::initialize()
+     * @covers \ExtendsFramework\ORM\Entity\Exception\EntityAlreadyInitialized::__construct()
      */
     public function testEntityAlreadyInitialized(): void
     {
+        $this->expectException(EntityAlreadyInitialized::class);
+        $this->expectExceptionMessage('Entity can only be initialized once.');
+
         $relation = $this->createMock(RelationInterface::class);
 
         $property = $this->createMock(PropertyInterface::class);
@@ -241,13 +249,14 @@ class AbstractEntityTest extends TestCase
      *
      * Test that an exception will be thrown when property can not be found.
      *
-     * @covers                   \ExtendsFramework\ORM\Entity\AbstractEntity::getProperty()
-     * @covers                   \ExtendsFramework\ORM\Entity\Exception\PropertyNotFound::__construct()
-     * @expectedException        \ExtendsFramework\ORM\Entity\Exception\PropertyNotFound
-     * @expectedExceptionMessage Property with name "name" can not be found.
+     * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::getProperty()
+     * @covers \ExtendsFramework\ORM\Entity\Exception\PropertyNotFound::__construct()
      */
     public function testPropertyNotFound(): void
     {
+        $this->expectException(PropertyNotFound::class);
+        $this->expectExceptionMessage('Property with name "name" can not be found.');
+
         $relation = $this->createMock(RelationInterface::class);
 
         $property = $this->createMock(PropertyInterface::class);
@@ -270,13 +279,14 @@ class AbstractEntityTest extends TestCase
      *
      * Test that an exception will be thrown when relation can not be found.
      *
-     * @covers                   \ExtendsFramework\ORM\Entity\AbstractEntity::getRelation()
-     * @covers                   \ExtendsFramework\ORM\Entity\Exception\RelationNotFound::__construct()
-     * @expectedException        \ExtendsFramework\ORM\Entity\Exception\RelationNotFound
-     * @expectedExceptionMessage Relation with name "command" can not be found.
+     * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::getRelation()
+     * @covers \ExtendsFramework\ORM\Entity\Exception\RelationNotFound::__construct()
      */
     public function testRelationNotFound(): void
     {
+        $this->expectException(RelationNotFound::class);
+        $this->expectExceptionMessage('Relation with name "command" can not be found.');
+
         $relation = $this->createMock(RelationInterface::class);
 
         $property = $this->createMock(PropertyInterface::class);
@@ -292,45 +302,5 @@ class AbstractEntityTest extends TestCase
         $entity->initialize($entityManager, new stdClass());
 
         $entity->getRelation('command');
-    }
-}
-
-/**
- * @property PropertyInterface $name
- * @property RelationInterface $comments
- * @property null              $unknown
- */
-class EntityStub extends AbstractEntity
-{
-    /**
-     * @var PropertyInterface
-     */
-    protected $property;
-
-    /**
-     * @var RelationInterface
-     */
-    protected $relation;
-
-    /**
-     * EntityStub constructor.
-     *
-     * @param PropertyInterface $property
-     * @param RelationInterface $relation
-     */
-    public function __construct(PropertyInterface $property, RelationInterface $relation)
-    {
-        $this->property = $property;
-        $this->relation = $relation;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
-    {
-        $this
-            ->addProperty($this->property, true)
-            ->addRelation($this->relation);
     }
 }

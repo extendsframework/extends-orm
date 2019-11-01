@@ -5,6 +5,7 @@ namespace ExtendsFramework\ORM\Entity\Relation\OneToOne;
 
 use ExtendsFramework\ORM\Entity\EntityInterface;
 use ExtendsFramework\ORM\Entity\Property\PropertyInterface;
+use ExtendsFramework\ORM\Entity\Relation\OneToOne\Exception\NullRelationNotAllowed;
 use ExtendsFramework\ORM\EntityManager\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -97,14 +98,15 @@ class OneToOneRelationTest extends TestCase
      *
      * Test that an exception will be thrown when relation is not nullable and related entity can not be found.
      *
-     * @covers                   \ExtendsFramework\ORM\Entity\Relation\OneToOne\OneToOneRelation::__construct()
-     * @covers                   \ExtendsFramework\ORM\Entity\Relation\OneToOne\OneToOneRelation::getRelated()
-     * @covers                   \ExtendsFramework\ORM\Entity\Relation\OneToOne\Exception\NullRelationNotAllowed::__construct()
-     * @expectedException        \ExtendsFramework\ORM\Entity\Relation\OneToOne\Exception\NullRelationNotAllowed
-     * @expectedExceptionMessage Null value for relation "author" is not allowed.
+     * @covers \ExtendsFramework\ORM\Entity\Relation\OneToOne\OneToOneRelation::__construct()
+     * @covers \ExtendsFramework\ORM\Entity\Relation\OneToOne\OneToOneRelation::getRelated()
+     * @covers \ExtendsFramework\ORM\Entity\Relation\OneToOne\Exception\NullRelationNotAllowed::__construct()
      */
     public function testEntityNotFound(): void
     {
+        $this->expectException(NullRelationNotAllowed::class);
+        $this->expectExceptionMessage('Null value for relation "author" is not allowed.');
+
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager
             ->expects($this->once())

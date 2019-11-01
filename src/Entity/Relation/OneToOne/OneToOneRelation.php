@@ -76,11 +76,11 @@ class OneToOneRelation extends AbstractRelation
      */
     public function getRelated(EntityManagerInterface $entityManager, EntityInterface $entity): ?EntityInterface
     {
-        if ($this->initialized === false) {
+        if (!$this->initialized) {
             $property = $entity->getProperty($this->local);
 
             $related = $entityManager->findById($property->getValue(), $this->entity);
-            if ($related === null && $this->allowEmpty === false) {
+            if ($related === null && !$this->allowEmpty) {
                 throw new NullRelationNotAllowed($this->getName());
             }
 

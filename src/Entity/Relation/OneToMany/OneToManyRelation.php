@@ -69,7 +69,7 @@ class OneToManyRelation extends AbstractRelation
      */
     public function getRelated(EntityManagerInterface $entityManager, EntityInterface $entity): CollectionInterface
     {
-        if ($this->initialized === false) {
+        if (!$this->initialized) {
             $property = $entity->getProperty($this->local);
 
             $this->related = $entityManager->findByQuery(new Query(

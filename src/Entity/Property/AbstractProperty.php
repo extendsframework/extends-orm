@@ -77,13 +77,13 @@ abstract class AbstractProperty implements PropertyInterface
      */
     public function populate($value): PropertyInterface
     {
-        if ($this->populated === true) {
+        if ($this->populated) {
             throw new PropertyAlreadyPopulated($this->getName());
         }
 
         if ($value !== null) {
             $this->doPopulate($value);
-        } elseif ($this->nullable === false) {
+        } elseif (!$this->nullable) {
             throw new PropertyIsNotNullable($this->getName());
         }
 

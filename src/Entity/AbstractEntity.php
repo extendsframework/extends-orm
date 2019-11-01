@@ -63,11 +63,11 @@ abstract class AbstractEntity implements EntityInterface
      */
     public function __get(string $name)
     {
-        if (isset($this->relations[$name]) === true) {
+        if (isset($this->relations[$name])) {
             return $this->relations[$name]->getRelated($this->entityManager, $this);
         }
 
-        if (isset($this->properties[$name]) === true) {
+        if (isset($this->properties[$name])) {
             return $this->properties[$name]->getValue();
         }
 
@@ -104,7 +104,7 @@ abstract class AbstractEntity implements EntityInterface
      */
     public function initialize(EntityManagerInterface $entityManager, object $data): EntityInterface
     {
-        if ($this->initialized === true) {
+        if ($this->initialized) {
             throw new EntityAlreadyInitialized();
         }
 
@@ -125,7 +125,7 @@ abstract class AbstractEntity implements EntityInterface
      */
     public function getProperty(string $name): PropertyInterface
     {
-        if (isset($this->properties[$name]) === false) {
+        if (!isset($this->properties[$name])) {
             throw new PropertyNotFound($name);
         }
 
@@ -137,7 +137,7 @@ abstract class AbstractEntity implements EntityInterface
      */
     public function getRelation(string $name): RelationInterface
     {
-        if (isset($this->relations[$name]) === false) {
+        if (!isset($this->relations[$name])) {
             throw new RelationNotFound($name);
         }
 
@@ -153,7 +153,7 @@ abstract class AbstractEntity implements EntityInterface
      */
     protected function addProperty(PropertyInterface $property, bool $identifier = null): AbstractEntity
     {
-        if ($identifier === true) {
+        if ($identifier) {
             $this->identifier = $property;
         }
 

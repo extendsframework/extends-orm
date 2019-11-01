@@ -33,7 +33,7 @@ class EntityManager implements EntityManagerInterface
      */
     public function findById(string $identifier, string $class): ?EntityInterface
     {
-        if (isset($this->entityMap[$class][$identifier]) === true) {
+        if (isset($this->entityMap[$class][$identifier])) {
             return $this->entityMap[$class][$identifier];
         }
 
@@ -68,7 +68,7 @@ class EntityManager implements EntityManagerInterface
      */
     public function addRepository(RepositoryInterface $repository, string $entity): EntityManager
     {
-        if (array_key_exists($entity, $this->repositories) === true) {
+        if (array_key_exists($entity, $this->repositories)) {
             throw new EntityAlreadyRegistered($entity);
         }
 
@@ -86,7 +86,7 @@ class EntityManager implements EntityManagerInterface
      */
     private function getRepository(string $entity): RepositoryInterface
     {
-        if (array_key_exists($entity, $this->repositories) === false) {
+        if (!isset($this->repositories[$entity])) {
             throw new EntityNotSupported($entity);
         }
 

@@ -17,7 +17,7 @@ class StringProperty extends AbstractProperty
      */
     protected function doPopulate($value): AbstractProperty
     {
-        if (is_scalar($value) === false && method_exists($value, '__toString') === false) {
+        if (!is_scalar($value) && !method_exists($value, '__toString')) {
             throw new ValueNotAString($this->getName(), $value);
         }
 

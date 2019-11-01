@@ -8,7 +8,6 @@ use ExtendsFramework\ORM\Entity\Exception\EntityIsImmutable;
 use ExtendsFramework\ORM\Entity\Exception\IdentifierNotSet;
 use ExtendsFramework\ORM\Entity\Exception\PropertyNotFound;
 use ExtendsFramework\ORM\Entity\Exception\RelationNotFound;
-use ExtendsFramework\ORM\Entity\Property\PropertyException;
 use ExtendsFramework\ORM\Entity\Property\PropertyInterface;
 use ExtendsFramework\ORM\Entity\Relation\RelationInterface;
 use ExtendsFramework\ORM\EntityManager\EntityManagerInterface;
@@ -117,7 +116,11 @@ abstract class AbstractEntity implements EntityInterface
             throw new IdentifierNotSet();
         }
 
-        return $this->populate($data);
+        foreach ($this->properties as $property) {
+            $property->populate($data->{$property->getName()} ?? null);
+        }
+
+        return $this;
     }
 
     /**
@@ -183,20 +186,4 @@ abstract class AbstractEntity implements EntityInterface
      * @return void
      */
     abstract protected function setUp(): void;
-
-    /**
-     * Populate entity.
-     *
-     * @param object $data
-     * @return AbstractEntity
-     * @throws PropertyException
-     */
-    private function populate(object $data): AbstractEntity
-    {
-        foreach ($this->properties as $property) {
-            $property->populate($data->{$property->getName()} ?? null);
-        }
-
-        return $this;
-    }
 }

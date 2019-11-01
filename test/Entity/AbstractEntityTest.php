@@ -23,7 +23,6 @@ class AbstractEntityTest extends TestCase
      * Test that entity property will be initialized with given object value.
      *
      * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::initialize()
-     * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::populate()
      * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::addProperty()
      * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::addRelation()
      * @covers \ExtendsFramework\ORM\Entity\AbstractEntity::getProperty()
